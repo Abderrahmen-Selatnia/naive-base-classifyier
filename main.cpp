@@ -218,16 +218,21 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
             email.toggleBlinking();
             SDL_Rect emailRect = {email.x, email.y, EMAIL_WIDTH, EMAIL_HEIGHT};
 
-            SDL_Color classifierColor = email.is_spam ? RED : GREEN;
-            for (int i = 0; i < 4; i++)
-            {
+            bool containsSpamWord = email.content.find("free") != std::string::npos || email.content.find("offer") != std::string::npos;
+
+            SDL_Color classifierColor = containsSpamWord ? RED : GREEN;
+
+            for (int i = 0; i < 4; i++) {
                 SDL_SetRenderDrawColor(renderer, email.blinking ? classifierColor.r : GRAY.r,
-                                       email.blinking ? classifierColor.g : GRAY.g,
-                                       email.blinking ? classifierColor.b : GRAY.b, 255);
+                                    email.blinking ? classifierColor.g : GRAY.g,
+                                    email.blinking ? classifierColor.b : GRAY.b, 255);
+
                 SDL_RenderFillRect(renderer, &classifierShape);
                 SDL_RenderFillRect(renderer, &emailRect);
                 SDL_RenderPresent(renderer);
+
                 SDL_Delay(100);
+
                 email.toggleBlinking();
             }
 
