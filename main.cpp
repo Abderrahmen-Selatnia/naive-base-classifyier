@@ -178,6 +178,9 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
     SDL_Rect classifierShape = {50, 50, 20, 20};
 
     int currentIndex = 0;
+
+    TTF_Font *largeFont = TTF_OpenFont("Arial.ttf", 24); // Larger font for the current address text
+
     for (int col = 0; col < MAX_COLS; col++)
     {
         for (int row = 0; row < num_rows; row++)
@@ -211,8 +214,16 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
                 SDL_SetRenderDrawColor(renderer, GRAY.r, GRAY.g, GRAY.b, 255);
                 SDL_RenderFillRect(renderer, &classifierShape);
 
+                // Render current address at the bottom
+                SDL_Surface *addressSurface = TTF_RenderText_Solid(largeFont, email.address.c_str(), WHITE);
+                SDL_Texture *addressTexture = SDL_CreateTextureFromSurface(renderer, addressSurface);
+                SDL_Rect addressRect = {50, SCREEN_HEIGHT - 50 - addressSurface->h, addressSurface->w, addressSurface->h};
+                SDL_RenderCopy(renderer, addressTexture, NULL, &addressRect);
+                SDL_DestroyTexture(addressTexture);
+                SDL_FreeSurface(addressSurface);
+
                 SDL_RenderPresent(renderer);
-                SDL_Delay(5);
+                SDL_Delay(15);//classifier delay
             }
 
             email.toggleBlinking();
@@ -260,6 +271,8 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
     SDL_RenderClear(renderer);
 
     renderClassifiedEmails(renderer, font, spamEmails, nonSpamEmails);
+
+    TTF_CloseFont(largeFont); // Close the large font
 }
 
 int main(int argc, char *argv[])
