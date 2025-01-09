@@ -19,6 +19,9 @@ const int EMAIL_WIDTH = 70 * RECT_SCALE;
 const int EMAIL_HEIGHT = 35 * RECT_SCALE;
 const int GRID_SPACING = 40;
 const int SCROLL_SPEED = 10;
+const int MAX_ADDRESS_LENGTH = 256;
+const int MAX_COLUMN_WIDTH = 1000;
+const int MAX_GRID_OFFSET = 2000;
 
 int gridOffsetX = 0;
 bool isDragging = false;
@@ -50,15 +53,62 @@ struct Email {
     float current_x, current_y;
 
     Email(int x, int y, std::string address, std::string content)
-        : x(x), y(y), current_x(x), current_y(y), target_x(x), target_y(y),
-          address(address), content(content), color(WHITE), blinking(false), is_spam(false) {}
+        : x(std::min(x, SCREEN_WIDTH)), 
+          y(std::min(y, SCREEN_HEIGHT)), 
+          current_x(std::min(x, SCREEN_WIDTH)), 
+          current_y(std::min(y, SCREEN_HEIGHT)), 
+          target_x(std::min(x, SCREEN_WIDTH)), 
+          target_y(std::min(y, SCREEN_HEIGHT)),
+          address(address.substr(0, MAX_ADDRESS_LENGTH)), 
+          content(content), 
+          color(WHITE), 
+          blinking(false), 
+          is_spam(false) {}
 
     void updatePosition() {
         const float LERP_FACTOR = 0.1f;
         current_x += (target_x - current_x) * LERP_FACTOR;
         current_y += (target_y - current_y) * LERP_FACTOR;
+        
+        current_x = std::min(current_x, static_cast<float>(SCREEN_WIDTH));
+        current_y = std::min(current_y, static_cast<float>(SCREEN_HEIGHT));
     }
 };
+
+std::unordered_map<std::string, bool> loadWordList(const std::string& filename) {
+    std::unordered_map<std::string, bool> wordList;
+    std::ifstream file(filename);
+    std::string word;
+    while (std::getline(file, word)) {
+        std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+        wordList[word] = true;
+    }
+    return wordList;
+}
+
+void handleMouseEvents(SDL_Event& event, bool& isDragging, int& gridOffsetX, int& lastMouseX) {
+    switch (event.type) {
+        case SDL_MOUSEBUTTONDOWN:
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                isDragging = true;
+                lastMouseX = event.button.x;
+            }
+            break;
+        case SDL_MOUSEBUTTONUP:
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                isDragging = false;
+            }
+            break;
+        case SDL_MOUSEMOTION:
+            if (isDragging) {
+                int deltaX = event.motion.x - lastMouseX;
+                gridOffsetX += deltaX;
+                lastMouseX = event.motion.x;
+            }
+            break;
+    }
+}
+
 class NaiveBayesClassifier {
 private:
     std::unordered_map<std::string, double> spamWordProbs;
@@ -113,7 +163,6 @@ public:
                 nonSpamScore += log(nonSpamWordProbs[word]);
             }
         }
-        
         return spamScore > nonSpamScore;
     }
 
@@ -126,42 +175,114 @@ public:
     }
 };
 
+std::vector<Email> loadEmails(const std::string &filename) {
+    std::vector<Email> emails;
+    std::ifstream file(filename);
+    std::string line;
 
-void handleMouseEvents(SDL_Event& event, bool& isDragging, int& gridOffsetX, int& lastMouseX) {
-    switch (event.type) {
-        case SDL_MOUSEBUTTONDOWN:
-            if (event.button.button == SDL_BUTTON_LEFT) {
-                isDragging = true;
-                lastMouseX = event.button.x;
+    if (file.is_open()) {
+        const int START_X = 50;
+        const int START_Y = 50;
+        const int EMAILS_PER_COLUMN = (SCREEN_HEIGHT - 100) / (EMAIL_HEIGHT + GRID_SPACING);
+        
+        int currentX = START_X;
+        int currentY = START_Y;
+        int count = 0;
+        int maxColumnWidth = EMAIL_WIDTH;
+        std::vector<Email> currentColumn;
+        
+        while (std::getline(file, line)) {
+            std::istringstream ss(line);
+            std::string address, content;
+
+            std::getline(ss, address, ',');
+            std::getline(ss, content);
+
+            if (!address.empty() && !content.empty()) {
+                address = address.substr(0, MAX_ADDRESS_LENGTH);
+                Email email(currentX, currentY, address, content);
+                currentColumn.push_back(email);
+                
+                int addressWidth = std::min(static_cast<int>(address.length()), MAX_ADDRESS_LENGTH) * 8;
+                maxColumnWidth = std::min(std::max(maxColumnWidth, EMAIL_WIDTH + addressWidth), MAX_COLUMN_WIDTH);
+                
+                count++;
+                currentY = std::min(currentY + EMAIL_HEIGHT + GRID_SPACING, SCREEN_HEIGHT);
+                
+                if (count % EMAILS_PER_COLUMN == 0) {
+                    emails.insert(emails.end(), currentColumn.begin(), currentColumn.end());
+                    currentColumn.clear();
+                    currentY = START_Y;
+                    currentX = std::min(currentX + maxColumnWidth + GRID_SPACING, SCREEN_WIDTH);
+                    maxColumnWidth = EMAIL_WIDTH;
+                }
             }
-            break;
-            
-        case SDL_MOUSEBUTTONUP:
-            if (event.button.button == SDL_BUTTON_LEFT) {
-                isDragging = false;
-            }
-            break;
-            
-        case SDL_MOUSEMOTION:
-            if (isDragging) {
-                int deltaX = event.motion.x - lastMouseX;
-                gridOffsetX += deltaX;
-                lastMouseX = event.motion.x;
-            }
-            break;
+        }
+        
+        if (!currentColumn.empty()) {
+            emails.insert(emails.end(), currentColumn.begin(), currentColumn.end());
+        }
+        
+        file.close();
+    }
+    return emails;
+}
+
+void renderEmailRect(SDL_Renderer* renderer, const Email& email) {
+    SDL_Rect emailRect = {
+        std::min(static_cast<int>(email.current_x) + 
+            std::max(-MAX_GRID_OFFSET, std::min(gridOffsetX, MAX_GRID_OFFSET)), SCREEN_WIDTH),
+        std::min(static_cast<int>(email.current_y), SCREEN_HEIGHT),
+        std::min(EMAIL_WIDTH, SCREEN_WIDTH),
+        std::min(EMAIL_HEIGHT, SCREEN_HEIGHT)
+    };
+    SDL_SetRenderDrawColor(renderer, email.color.r, email.color.g, email.color.b, 255);
+    SDL_RenderFillRect(renderer, &emailRect);
+}
+
+void renderClassifier(SDL_Renderer* renderer, int x, int y, const std::string& currentWord, 
+                     const std::unordered_map<std::string, bool>& spamWords,
+                     const std::unordered_map<std::string, bool>& nonSpamWords) {
+    for(int i = 0; i < 3; i++) {
+        SDL_Rect classifierRect = {
+            std::min(x - 5 - i + std::max(-MAX_GRID_OFFSET, std::min(gridOffsetX, MAX_GRID_OFFSET)), SCREEN_WIDTH),
+            std::min(y - 5 - i, SCREEN_HEIGHT),
+            std::min(EMAIL_WIDTH + 10 + (i*2), SCREEN_WIDTH),
+            std::min(EMAIL_HEIGHT + 10 + (i*2), SCREEN_HEIGHT)
+        };
+        
+        std::string wordLower = currentWord;
+        std::transform(wordLower.begin(), wordLower.end(), wordLower.begin(), ::tolower);
+        
+        if (spamWords.count(wordLower)) {
+            SDL_SetRenderDrawColor(renderer, RED.r, RED.g, RED.b, 255);
+        } else if (nonSpamWords.count(wordLower)) {
+            SDL_SetRenderDrawColor(renderer, GREEN.r, GREEN.g, GREEN.b, 255);
+        } else {
+            SDL_SetRenderDrawColor(renderer, GRAY.r, GRAY.g, GRAY.b, 255);
+        }
+        
+        SDL_RenderDrawRect(renderer, &classifierRect);
     }
 }
 
-std::unordered_map<std::string, bool> loadWordList(const std::string& filename) {
-    std::unordered_map<std::string, bool> wordList;
-    std::ifstream file(filename);
-    std::string word;
-    
-    while (std::getline(file, word)) {
-        std::transform(word.begin(), word.end(), word.begin(), ::tolower);
-        wordList[word] = true;
+void renderEmailAddress(SDL_Renderer *renderer, TTF_Font *font, const Email &email) {
+    SDL_Surface *surface = TTF_RenderText_Solid(font, email.address.c_str(), WHITE);
+    if (surface) {
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+        if (texture) {
+            SDL_Rect destRect = {
+                std::min(static_cast<int>(email.current_x + EMAIL_WIDTH + 15) + 
+                    std::max(-MAX_GRID_OFFSET, std::min(gridOffsetX, MAX_GRID_OFFSET)), SCREEN_WIDTH),
+                std::min(static_cast<int>(email.current_y), SCREEN_HEIGHT),
+                std::min(surface->w, SCREEN_WIDTH),
+                std::min(surface->h, SCREEN_HEIGHT)
+            };
+            SDL_RenderCopy(renderer, texture, NULL, &destRect);
+            SDL_DestroyTexture(texture);
+        }
+        SDL_FreeSurface(surface);
     }
-    return wordList;
 }
 
 void generateDetailedReports(const std::vector<Email>& emails, 
@@ -196,119 +317,12 @@ void generateDetailedReports(const std::vector<Email>& emails,
         reportFile << "Spam Probability: " << pair.second.spamProbability << "\n\n";
     }
 }
-std::vector<Email> loadEmails(const std::string &filename) {
-    std::vector<Email> emails;
-    std::ifstream file(filename);
-    std::string line;
-
-    if (file.is_open()) {
-        const int START_X = 50;
-        const int START_Y = 50;
-        const int EMAILS_PER_COLUMN = (SCREEN_HEIGHT - 100) / (EMAIL_HEIGHT + GRID_SPACING);
-        
-        int currentX = START_X;
-        int currentY = START_Y;
-        int count = 0;
-        int maxColumnWidth = EMAIL_WIDTH;
-        std::vector<Email> currentColumn;
-        
-        while (std::getline(file, line)) {
-            std::istringstream ss(line);
-            std::string address, content;
-
-            std::getline(ss, address, ',');
-            std::getline(ss, content);
-
-            if (!address.empty() && !content.empty()) {
-                Email email(currentX, currentY, address, content);
-                currentColumn.push_back(email);
-                
-                int addressWidth = address.length() * 8;
-                maxColumnWidth = std::max(maxColumnWidth, EMAIL_WIDTH + addressWidth);
-                
-                count++;
-                currentY += EMAIL_HEIGHT + GRID_SPACING;
-                
-                if (count % EMAILS_PER_COLUMN == 0) {
-                    emails.insert(emails.end(), currentColumn.begin(), currentColumn.end());
-                    currentColumn.clear();
-                    currentY = START_Y;
-                    currentX += maxColumnWidth + GRID_SPACING;
-                    maxColumnWidth = EMAIL_WIDTH;
-                }
-            }
-        }
-        
-        if (!currentColumn.empty()) {
-            emails.insert(emails.end(), currentColumn.begin(), currentColumn.end());
-        }
-        
-        file.close();
-    }
-    return emails;
-}
-
-void renderEmailRect(SDL_Renderer* renderer, const Email& email) {
-    SDL_Rect emailRect = {
-        static_cast<int>(email.current_x) + gridOffsetX, 
-        static_cast<int>(email.current_y), 
-        EMAIL_WIDTH, 
-        EMAIL_HEIGHT
-    };
-    SDL_SetRenderDrawColor(renderer, email.color.r, email.color.g, email.color.b, 255);
-    SDL_RenderFillRect(renderer, &emailRect);
-}
-
-void renderClassifier(SDL_Renderer* renderer, int x, int y, const std::string& currentWord, 
-                     const std::unordered_map<std::string, bool>& spamWords,
-                     const std::unordered_map<std::string, bool>& nonSpamWords) {
-    // Draw multiple rectangles for bold effect
-    for(int i = 0; i < 3; i++) {  // Increased thickness
-        SDL_Rect classifierRect = {
-            x - 5 - i + gridOffsetX, 
-            y - 5 - i, 
-            EMAIL_WIDTH + 10 + (i*2), 
-            EMAIL_HEIGHT + 10 + (i*2)
-        };
-        
-        std::string wordLower = currentWord;
-        std::transform(wordLower.begin(), wordLower.end(), wordLower.begin(), ::tolower);
-        
-        if (spamWords.count(wordLower)) {
-            SDL_SetRenderDrawColor(renderer, RED.r, RED.g, RED.b, 255);
-        } else if (nonSpamWords.count(wordLower)) {
-            SDL_SetRenderDrawColor(renderer, GREEN.r, GREEN.g, GREEN.b, 255);
-        } else {
-            SDL_SetRenderDrawColor(renderer, GRAY.r, GRAY.g, GRAY.b, 255);
-        }
-        
-        SDL_RenderDrawRect(renderer, &classifierRect);
-    }
-}
-
-void renderEmailAddress(SDL_Renderer *renderer, TTF_Font *font, const Email &email) {
-    SDL_Surface *surface = TTF_RenderText_Solid(font, email.address.c_str(), WHITE);
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect destRect = {
-        static_cast<int>(email.current_x + EMAIL_WIDTH + 15) + gridOffsetX, // Increased from 5 to 15
-        static_cast<int>(email.current_y),
-        surface->w,
-        surface->h
-    };
-    SDL_RenderCopy(renderer, texture, NULL, &destRect);
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(surface);
-}
-
-// [Previous generateDetailedReports implementation remains the same]
 
 void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &emails) {
     NaiveBayesClassifier classifier;
     auto spamWords = loadWordList("spam_words.txt");
     auto nonSpamWords = loadWordList("non_spam_words.txt");
     
-    
-    // Initial training phase
     for (Email& email : emails) {
         std::istringstream ss(email.content);
         std::string word;
@@ -324,21 +338,17 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
     
     classifier.train(emails);
     
-    // Classification phase with visualization
     for (Email& email : emails) {
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-        
         SDL_Event event;
         std::istringstream ss(email.content);
         std::string word;
-       while (ss >> word) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q) {
-                return; // Return to main where cleanup will happen
+        while (ss >> word) {
+            while (SDL_PollEvent(&event)) {
+                                if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q) {
+                    return;
+                }
+                handleMouseEvents(event, isDragging, gridOffsetX, lastMouseX);
             }
-            handleMouseEvents(event, isDragging, gridOffsetX, lastMouseX);
-        }
             
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
@@ -434,15 +444,15 @@ int main(int argc, char *argv[]) {
 
     bool running = true;
     SDL_Event event;
-   while (running) {
-    while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT || 
-            (event.type == SDL_KEYDOWN && 
-             (event.key.keysym.sym == SDLK_ESCAPE || event.key.keysym.sym == SDLK_q))) {
-            running = false;
+    while (running) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT || 
+                (event.type == SDL_KEYDOWN && 
+                 (event.key.keysym.sym == SDLK_ESCAPE || event.key.keysym.sym == SDLK_q))) {
+                running = false;
+            }
+            handleMouseEvents(event, isDragging, gridOffsetX, lastMouseX);
         }
-        handleMouseEvents(event, isDragging, gridOffsetX, lastMouseX);
-    }
         
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
