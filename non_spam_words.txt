@@ -1,0 +1,10 @@
+meeting
+report
+project
+deadline
+schedule
+team
+discussion
+plan
+presentation
+progress

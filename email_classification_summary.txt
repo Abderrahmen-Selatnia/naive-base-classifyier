@@ -1,0 +1,167 @@
+Email Classification Summary
+==========================
+
+Classified Emails:
+-----------------
+
+Email: alice@example.com
+Classification: SPAM
+Content: Get your free gift now! Limited time offer, don't miss out! Act quickly and receive amazing bonuses. Exclusive deal, only for you! Don't wait, claim it today before it's too late!
+-------------------------------------------
+
+Email: bob@example.com
+Classification: NON-SPAM
+Content: Meeting at 3 PM. Don't forget to bring the reports. We will discuss the upcoming project timeline and milestones. The team will provide updates, and we will allocate tasks accordingly.
+-------------------------------------------
+
+Email: charlie@example.com
+Classification: SPAM
+Content: Limited time offer! Get a special discount on all your purchases today! Act fast before it's too late. This is a limited-time offer, and once it's gone, it's gone forever!
+-------------------------------------------
+
+Email: david@example.com
+Classification: NON-SPAM
+Content: Here's the report. Please review it before the meeting. We need to discuss the key findings and any action points. The team will have a discussion about the next steps in the project.
+-------------------------------------------
+
+Email: emma@example.com
+Classification: SPAM
+Content: Exclusive deal just for you! Get 50% off all products! Don't wait, offer ends soon. Limited time only. Act now before it's too late. Don't miss this once-in-a-lifetime opportunity.
+-------------------------------------------
+
+Email: fay@example.com
+Classification: NON-SPAM
+Content: The next board meeting is scheduled for 10 AM tomorrow. We will go over the latest financial reports and discuss the annual budget. Please be on time and ready for a productive discussion.
+-------------------------------------------
+
+Email: grace@example.com
+Classification: SPAM
+Content: Massive discount on your next purchase! Limited time offer, act now before it’s too late. Get 50% off on all our products. Don't miss this chance, it won't last long.
+-------------------------------------------
+
+Email: hannah@example.com
+Classification: NON-SPAM
+Content: Important update regarding the project schedule. The meeting will now take place at 2 PM. We will go through the timeline and discuss task assignments. Please make sure to attend.
+-------------------------------------------
+
+Email: ian@example.com
+Classification: SPAM
+Content: Act fast and get your free trial now! Don't miss out on this incredible offer. You can access premium services at no cost for a limited time. Grab your free trial today!
+-------------------------------------------
+
+Email: jack@example.com
+Classification: NON-SPAM
+Content: Quarterly meeting is set for 1 PM. We will review the quarterly results and make adjustments for the next quarter. Please bring any relevant documents and be prepared for discussion.
+-------------------------------------------
+
+Email: alice@example.com
+Classification: SPAM
+Content: Get your free gift now! Limited time offer, don't miss out! Act quickly and receive amazing bonuses. Exclusive deal, only for you! Don't wait, claim it today before it's too late!
+-------------------------------------------
+
+Email: bob@example.com
+Classification: NON-SPAM
+Content: Meeting at 3 PM. Don't forget to bring the reports. We will discuss the upcoming project timeline and milestones. The team will provide updates, and we will allocate tasks accordingly.
+-------------------------------------------
+
+Email: charlie@example.com
+Classification: SPAM
+Content: Limited time offer! Get a special discount on all your purchases today! Act fast before it's too late. This is a limited-time offer, and once it's gone, it's gone forever!
+-------------------------------------------
+
+Email: david@example.com
+Classification: NON-SPAM
+Content: Here's the report. Please review it before the meeting. We need to discuss the key findings and any action points. The team will have a discussion about the next steps in the project.
+-------------------------------------------
+
+Email: emma@example.com
+Classification: SPAM
+Content: Exclusive deal just for you! Get 50% off all products! Don't wait, offer ends soon. Limited time only. Act now before it's too late. Don't miss this once-in-a-lifetime opportunity.
+-------------------------------------------
+
+Email: fay@example.com
+Classification: NON-SPAM
+Content: The next board meeting is scheduled for 10 AM tomorrow. We will go over the latest financial reports and discuss the annual budget. Please be on time and ready for a productive discussion.
+-------------------------------------------
+
+Email: grace@example.com
+Classification: SPAM
+Content: Massive discount on your next purchase! Limited time offer, act now before it’s too late. Get 50% off on all our products. Don't miss this chance, it won't last long.
+-------------------------------------------
+
+Email: hannah@example.com
+Classification: NON-SPAM
+Content: Important update regarding the project schedule. The meeting will now take place at 2 PM. We will go through the timeline and discuss task assignments. Please make sure to attend.
+-------------------------------------------
+
+Email: ian@example.com
+Classification: SPAM
+Content: Act fast and get your free trial now! Don't miss out on this incredible offer. You can access premium services at no cost for a limited time. Grab your free trial today!
+-------------------------------------------
+
+Email: jack@example.com
+Classification: NON-SPAM
+Content: Quarterly meeting is set for 1 PM. We will review the quarterly results and make adjustments for the next quarter. Please bring any relevant documents and be prepared for discussion.
+-------------------------------------------
+
+Email: alice@example.com
+Classification: SPAM
+Content: Get your free gift now! Limited time offer, don't miss out! Act quickly and receive amazing bonuses. Exclusive deal, only for you! Don't wait, claim it today before it's too late!
+-------------------------------------------
+
+Email: bob@example.com
+Classification: NON-SPAM
+Content: Meeting at 3 PM. Don't forget to bring the reports. We will discuss the upcoming project timeline and milestones. The team will provide updates, and we will allocate tasks accordingly.
+-------------------------------------------
+
+Email: charlie@example.com
+Classification: SPAM
+Content: Limited time offer! Get a special discount on all your purchases today! Act fast before it's too late. This is a limited-time offer, and once it's gone, it's gone forever!
+-------------------------------------------
+
+Email: david@example.com
+Classification: NON-SPAM
+Content: Here's the report. Please review it before the meeting. We need to discuss the key findings and any action points. The team will have a discussion about the next steps in the project.
+-------------------------------------------
+
+Email: emma@example.com
+Classification: SPAM
+Content: Exclusive deal just for you! Get 50% off all products! Don't wait, offer ends soon. Limited time only. Act now before it's too late. Don't miss this once-in-a-lifetime opportunity.
+-------------------------------------------
+
+Email: fay@example.com
+Classification: NON-SPAM
+Content: The next board meeting is scheduled for 10 AM tomorrow. We will go over the latest financial reports and discuss the annual budget. Please be on time and ready for a productive discussion.
+-------------------------------------------
+
+Email: grace@example.com
+Classification: SPAM
+Content: Massive discount on your next purchase! Limited time offer, act now before it’s too late. Get 50% off on all our products. Don't miss this chance, it won't last long.
+-------------------------------------------
+
+Email: hannah@example.com
+Classification: NON-SPAM
+Content: Important update regarding the project schedule. The meeting will now take place at 2 PM. We will go through the timeline and discuss task assignments. Please make sure to attend.
+-------------------------------------------
+
+Email: ian@example.com
+Classification: SPAM
+Content: Act fast and get your free trial now! Don't miss out on this incredible offer. You can access premium services at no cost for a limited time. Grab your free trial today!
+-------------------------------------------
+
+Email: jack@example.com
+Classification: NON-SPAM
+Content: Quarterly meeting is set for 1 PM. We will review the quarterly results and make adjustments for the next quarter. Please bring any relevant documents and be prepared for discussion.
+-------------------------------------------
+
+Email: alice@example.com
+Classification: SPAM
+Content: Get your free gift now! Limited time offer, don't miss out! Act quickly and receive amazing bonuses. Exclusive deal, only for you! Don't wait, claim it today before it's too late!
+-------------------------------------------
+
+Statistics:
+-----------
+Total Emails: 31
+Spam Emails: 16
+Non-Spam Emails: 15
+Spam Ratio: 51.61%

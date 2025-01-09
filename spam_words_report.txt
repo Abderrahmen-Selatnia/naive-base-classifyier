@@ -1,0 +1,5 @@
+Spam Words Analysis (probability > 0.7)
+=====================================
+
+Word | Spam Count | Non-Spam Count | Probability
+---------------------------------------------

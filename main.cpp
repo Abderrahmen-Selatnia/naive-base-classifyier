@@ -1,24 +1,45 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include <iostream>
 #include <vector>
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <unordered_map>
+#include <map>
+#include <cmath>
+#include <algorithm>
+#include <iomanip>
 
 const int SCREEN_WIDTH = 1900;
 const int SCREEN_HEIGHT = 900;
 const float RECT_SCALE = 0.3;
 const int EMAIL_WIDTH = 70 * RECT_SCALE;
 const int EMAIL_HEIGHT = 35 * RECT_SCALE;
+const int GRID_SPACING = 40;
+const int SCROLL_SPEED = 10;
+
+int gridOffsetX = 0;
+bool isDragging = false;
+int lastMouseX = 0;
 
 SDL_Color RED = {255, 0, 0, 255};
 SDL_Color GREEN = {0, 255, 0, 255};
 SDL_Color WHITE = {255, 255, 255, 255};
 SDL_Color GRAY = {169, 169, 169, 255};
+SDL_Color YELLOW = {255, 255, 0, 255};
 
-struct Email
-{
+struct WordStats {
+    std::string word;
+    int spamCount;
+    int nonSpamCount;
+    double spamProbability;
+    
+    WordStats() : spamCount(0), nonSpamCount(0), spamProbability(0.0) {}
+};
+
+struct Email {
     int x, y;
     int target_x, target_y;
     SDL_Color color;
@@ -26,286 +47,412 @@ struct Email
     std::string address;
     std::string content;
     bool is_spam;
+    float current_x, current_y;
 
     Email(int x, int y, std::string address, std::string content)
-        : x(x), y(y), address(address), content(content), color(WHITE), blinking(false), is_spam(false) {}
+        : x(x), y(y), current_x(x), current_y(y), target_x(x), target_y(y),
+          address(address), content(content), color(WHITE), blinking(false), is_spam(false) {}
 
-    void toggleBlinking()
-    {
-        blinking = !blinking;
+    void updatePosition() {
+        const float LERP_FACTOR = 0.1f;
+        current_x += (target_x - current_x) * LERP_FACTOR;
+        current_y += (target_y - current_y) * LERP_FACTOR;
+    }
+};
+class NaiveBayesClassifier {
+private:
+    std::unordered_map<std::string, double> spamWordProbs;
+    std::unordered_map<std::string, double> nonSpamWordProbs;
+    double spamPrior;
+    double nonSpamPrior;
+
+public:
+    void train(const std::vector<Email>& trainingSet) {
+        int spamCount = 0;
+        int totalEmails = trainingSet.size();
+        
+        std::unordered_map<std::string, int> spamWordCounts;
+        std::unordered_map<std::string, int> nonSpamWordCounts;
+        std::unordered_map<std::string, int> vocabulary;
+        
+        for (const Email& email : trainingSet) {
+            if (email.is_spam) spamCount++;
+            std::istringstream ss(email.content);
+            std::string word;
+            while (ss >> word) {
+                std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+                vocabulary[word]++;
+                if (email.is_spam) {
+                    spamWordCounts[word]++;
+                } else {
+                    nonSpamWordCounts[word]++;
+                }
+            }
+        }
+        
+        spamPrior = static_cast<double>(spamCount) / totalEmails;
+        nonSpamPrior = 1.0 - spamPrior;
+        
+        int vocabSize = vocabulary.size();
+        for (const auto& word : vocabulary) {
+            spamWordProbs[word.first] = (spamWordCounts[word.first] + 1.0) / (spamCount + vocabSize);
+            nonSpamWordProbs[word.first] = (nonSpamWordCounts[word.first] + 1.0) / (totalEmails - spamCount + vocabSize);
+        }
+    }
+    
+    bool classify(const std::string& content) {
+        double spamScore = log(spamPrior);
+        double nonSpamScore = log(nonSpamPrior);
+        
+        std::istringstream ss(content);
+        std::string word;
+        while (ss >> word) {
+            std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+            if (spamWordProbs.count(word)) {
+                spamScore += log(spamWordProbs[word]);
+                nonSpamScore += log(nonSpamWordProbs[word]);
+            }
+        }
+        
+        return spamScore > nonSpamScore;
     }
 
-    void classify()
-    {
-        if (content.find("free") != std::string::npos || content.find("offer") != std::string::npos)
-        {
-            color = RED;
-            is_spam = true;
-        }
-        else
-        {
-            color = GREEN;
-            is_spam = false;
-        }
+    const std::unordered_map<std::string, double>& getSpamWordProbs() const {
+        return spamWordProbs;
     }
-
-    void move(int speed = 3)
-    {
-        if (x < target_x)
-            x += speed;
-        if (x > target_x)
-            x -= speed;
-        if (y < target_y)
-            y += speed;
-        if (y > target_y)
-            y -= speed;
+    
+    const std::unordered_map<std::string, double>& getNonSpamWordProbs() const {
+        return nonSpamWordProbs;
     }
 };
 
-std::vector<Email> loadEmails(const std::string &filename)
-{
+
+void handleMouseEvents(SDL_Event& event, bool& isDragging, int& gridOffsetX, int& lastMouseX) {
+    switch (event.type) {
+        case SDL_MOUSEBUTTONDOWN:
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                isDragging = true;
+                lastMouseX = event.button.x;
+            }
+            break;
+            
+        case SDL_MOUSEBUTTONUP:
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                isDragging = false;
+            }
+            break;
+            
+        case SDL_MOUSEMOTION:
+            if (isDragging) {
+                int deltaX = event.motion.x - lastMouseX;
+                gridOffsetX += deltaX;
+                lastMouseX = event.motion.x;
+            }
+            break;
+    }
+}
+
+std::unordered_map<std::string, bool> loadWordList(const std::string& filename) {
+    std::unordered_map<std::string, bool> wordList;
+    std::ifstream file(filename);
+    std::string word;
+    
+    while (std::getline(file, word)) {
+        std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+        wordList[word] = true;
+    }
+    return wordList;
+}
+
+void generateDetailedReports(const std::vector<Email>& emails, 
+                           const std::unordered_map<std::string, double>& spamWordProbs,
+                           const std::unordered_map<std::string, double>& nonSpamWordProbs) {
+    std::map<std::string, WordStats> wordStats;
+    
+    for (const Email& email : emails) {
+        std::istringstream ss(email.content);
+        std::string word;
+        while (ss >> word) {
+            std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+            WordStats& stats = wordStats[word];
+            stats.word = word;
+            if (email.is_spam) {
+                stats.spamCount++;
+            } else {
+                stats.nonSpamCount++;
+            }
+            stats.spamProbability = spamWordProbs.count(word) ? spamWordProbs.at(word) : 0.0;
+        }
+    }
+
+    std::ofstream reportFile("classification_report.txt");
+    reportFile << "Word Classification Report\n";
+    reportFile << "========================\n\n";
+    
+    for (const auto& pair : wordStats) {
+        reportFile << "Word: " << pair.second.word << "\n";
+        reportFile << "Spam Count: " << pair.second.spamCount << "\n";
+        reportFile << "Non-Spam Count: " << pair.second.nonSpamCount << "\n";
+        reportFile << "Spam Probability: " << pair.second.spamProbability << "\n\n";
+    }
+}
+std::vector<Email> loadEmails(const std::string &filename) {
     std::vector<Email> emails;
     std::ifstream file(filename);
     std::string line;
 
-    if (file.is_open())
-    {
-        int yPos = 100;
-        while (std::getline(file, line))
-        {
+    if (file.is_open()) {
+        const int START_X = 50;
+        const int START_Y = 50;
+        const int EMAILS_PER_COLUMN = (SCREEN_HEIGHT - 100) / (EMAIL_HEIGHT + GRID_SPACING);
+        
+        int currentX = START_X;
+        int currentY = START_Y;
+        int count = 0;
+        int maxColumnWidth = EMAIL_WIDTH;
+        std::vector<Email> currentColumn;
+        
+        while (std::getline(file, line)) {
             std::istringstream ss(line);
             std::string address, content;
 
             std::getline(ss, address, ',');
             std::getline(ss, content);
 
-            if (!address.empty() && !content.empty())
-            {
-                emails.push_back(Email(100, yPos, address, content));
-                yPos += EMAIL_HEIGHT + 20;
+            if (!address.empty() && !content.empty()) {
+                Email email(currentX, currentY, address, content);
+                currentColumn.push_back(email);
+                
+                int addressWidth = address.length() * 8;
+                maxColumnWidth = std::max(maxColumnWidth, EMAIL_WIDTH + addressWidth);
+                
+                count++;
+                currentY += EMAIL_HEIGHT + GRID_SPACING;
+                
+                if (count % EMAILS_PER_COLUMN == 0) {
+                    emails.insert(emails.end(), currentColumn.begin(), currentColumn.end());
+                    currentColumn.clear();
+                    currentY = START_Y;
+                    currentX += maxColumnWidth + GRID_SPACING;
+                    maxColumnWidth = EMAIL_WIDTH;
+                }
             }
         }
+        
+        if (!currentColumn.empty()) {
+            emails.insert(emails.end(), currentColumn.begin(), currentColumn.end());
+        }
+        
         file.close();
     }
-    else
-    {
-        std::cerr << "Failed to open file: " << filename << std::endl;
-    }
-
     return emails;
 }
 
-void renderEmailAddress(SDL_Renderer *renderer, TTF_Font *font, const Email &email, int x, int y)
-{
+void renderEmailRect(SDL_Renderer* renderer, const Email& email) {
+    SDL_Rect emailRect = {
+        static_cast<int>(email.current_x) + gridOffsetX, 
+        static_cast<int>(email.current_y), 
+        EMAIL_WIDTH, 
+        EMAIL_HEIGHT
+    };
+    SDL_SetRenderDrawColor(renderer, email.color.r, email.color.g, email.color.b, 255);
+    SDL_RenderFillRect(renderer, &emailRect);
+}
+
+void renderClassifier(SDL_Renderer* renderer, int x, int y, const std::string& currentWord, 
+                     const std::unordered_map<std::string, bool>& spamWords,
+                     const std::unordered_map<std::string, bool>& nonSpamWords) {
+    // Draw multiple rectangles for bold effect
+    for(int i = 0; i < 3; i++) {  // Increased thickness
+        SDL_Rect classifierRect = {
+            x - 5 - i + gridOffsetX, 
+            y - 5 - i, 
+            EMAIL_WIDTH + 10 + (i*2), 
+            EMAIL_HEIGHT + 10 + (i*2)
+        };
+        
+        std::string wordLower = currentWord;
+        std::transform(wordLower.begin(), wordLower.end(), wordLower.begin(), ::tolower);
+        
+        if (spamWords.count(wordLower)) {
+            SDL_SetRenderDrawColor(renderer, RED.r, RED.g, RED.b, 255);
+        } else if (nonSpamWords.count(wordLower)) {
+            SDL_SetRenderDrawColor(renderer, GREEN.r, GREEN.g, GREEN.b, 255);
+        } else {
+            SDL_SetRenderDrawColor(renderer, GRAY.r, GRAY.g, GRAY.b, 255);
+        }
+        
+        SDL_RenderDrawRect(renderer, &classifierRect);
+    }
+}
+
+void renderEmailAddress(SDL_Renderer *renderer, TTF_Font *font, const Email &email) {
     SDL_Surface *surface = TTF_RenderText_Solid(font, email.address.c_str(), WHITE);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect destRect = {x, y, surface->w, surface->h};
+    SDL_Rect destRect = {
+        static_cast<int>(email.current_x + EMAIL_WIDTH + 15) + gridOffsetX, // Increased from 5 to 15
+        static_cast<int>(email.current_y),
+        surface->w,
+        surface->h
+    };
     SDL_RenderCopy(renderer, texture, NULL, &destRect);
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(surface);
 }
 
-void renderClassifiedEmails(SDL_Renderer *renderer, TTF_Font *font, const std::vector<Email> &spamEmails, const std::vector<Email> &nonSpamEmails)
-{
-    const int COLUMN_WIDTH = 100;
-    const int COLUMN_SPACING = 20;
-    const int ROW_SPACING = 20;
+// [Previous generateDetailedReports implementation remains the same]
 
-    int email_x = 50, email_y = 50;
-    for (const Email &email : spamEmails)
-    {
-        SDL_Rect emailRect = {email_x, email_y, EMAIL_WIDTH, EMAIL_HEIGHT};
-        SDL_SetRenderDrawColor(renderer, RED.r, RED.g, RED.b, 255);
-        SDL_RenderFillRect(renderer, &emailRect);
-        renderEmailAddress(renderer, font, email, email_x + EMAIL_WIDTH + 5, email_y);
-        email_y += EMAIL_HEIGHT + ROW_SPACING;
+void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &emails) {
+    NaiveBayesClassifier classifier;
+    auto spamWords = loadWordList("spam_words.txt");
+    auto nonSpamWords = loadWordList("non_spam_words.txt");
+    
+    
+    // Initial training phase
+    for (Email& email : emails) {
+        std::istringstream ss(email.content);
+        std::string word;
+        bool hasSpamWord = false;
+        while (ss >> word && !hasSpamWord) {
+            std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+            if (spamWords.count(word)) {
+                hasSpamWord = true;
+            }
+        }
+        email.is_spam = hasSpamWord;
+    }
+    
+    classifier.train(emails);
+    
+    // Classification phase with visualization
+    for (Email& email : emails) {
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        
+        SDL_Event event;
+        std::istringstream ss(email.content);
+        std::string word;
+       while (ss >> word) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q) {
+                return; // Return to main where cleanup will happen
+            }
+            handleMouseEvents(event, isDragging, gridOffsetX, lastMouseX);
+        }
+            
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderClear(renderer);
+            
+            for (const Email& e : emails) {
+                renderEmailRect(renderer, e);
+                renderEmailAddress(renderer, font, e);
+            }
+            
+            renderClassifier(renderer, email.current_x, email.current_y, word, spamWords, nonSpamWords);
+            SDL_RenderPresent(renderer);
+            SDL_Delay(30);
+        }
+        
+        email.is_spam = classifier.classify(email.content);
+        email.color = email.is_spam ? RED : GREEN;
+    }
 
-        if (email_y >= SCREEN_HEIGHT - 50)
-        {
-            email_y = 50;
-            email_x += COLUMN_WIDTH + COLUMN_SPACING;
+    const int SPAM_START_X = 50;
+    const int NON_SPAM_START_X = SCREEN_WIDTH - 250;
+    int spam_y = 50;
+    int non_spam_y = 50;
+
+    for (Email& email : emails) {
+        if (email.is_spam) {
+            email.target_x = SPAM_START_X;
+            email.target_y = spam_y;
+            spam_y += EMAIL_HEIGHT + GRID_SPACING;
+        } else {
+            email.target_x = NON_SPAM_START_X;
+            email.target_y = non_spam_y;
+            non_spam_y += EMAIL_HEIGHT + GRID_SPACING;
         }
     }
 
-    email_x = SCREEN_WIDTH - 50;
-    email_y = 50;
-    for (const Email &email : nonSpamEmails)
-    {
-        SDL_Rect emailRect = {email_x, email_y, EMAIL_WIDTH, EMAIL_HEIGHT};
-        SDL_SetRenderDrawColor(renderer, GREEN.r, GREEN.g, GREEN.b, 255);
-        SDL_RenderFillRect(renderer, &emailRect);
+    bool moving = true;
+    while (moving) {
+        moving = false;
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
 
-        int emailWidth = email.address.length() * 7;
-        renderEmailAddress(renderer, font, email, email_x - emailWidth - 2, email_y);
-        email_y += EMAIL_HEIGHT + ROW_SPACING;
-
-        if (email_y >= SCREEN_HEIGHT - 50)
-        {
-            email_y = 50;
-            email_x -= COLUMN_WIDTH + COLUMN_SPACING;
+        for (Email& email : emails) {
+            email.updatePosition();
+            if (std::abs(email.current_x - email.target_x) > 0.1 || 
+                std::abs(email.current_y - email.target_y) > 0.1) {
+                moving = true;
+            }
+            renderEmailRect(renderer, email);
+            renderEmailAddress(renderer, font, email);
         }
+        SDL_RenderPresent(renderer);
+        SDL_Delay(16);
     }
 
-    SDL_RenderPresent(renderer);
+    generateDetailedReports(emails, classifier.getSpamWordProbs(), classifier.getNonSpamWordProbs());
 }
 
-void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &emails)
-{
-    const int MAX_COLS = 8;
-    const int COLUMN_WIDTH = 200;
-    const int COLUMN_SPACING = 20;
-    const int ROW_SPACING = 20;
-
-    int gridStartX = (SCREEN_WIDTH - (MAX_COLS * (COLUMN_WIDTH + COLUMN_SPACING) - COLUMN_SPACING)) / 2;
-    int gridStartY = 50;
-
-    int num_rows = (emails.size() + MAX_COLS - 1) / MAX_COLS;
-
-    int email_x = gridStartX, email_y = gridStartY;
-    for (int i = 0; i < emails.size(); i++)
-    {
-        emails[i].x = email_x;
-        emails[i].y = email_y;
-
-        email_y += EMAIL_HEIGHT + ROW_SPACING;
-        if ((i + 1) % num_rows == 0)
-        {
-            email_x += COLUMN_WIDTH + COLUMN_SPACING;
-            email_y = gridStartY;
-        }
-    }
-
-    SDL_Rect classifierShape = {50, 50, 20, 20};
-
-    int currentIndex = 0;
-
-    TTF_Font *largeFont = TTF_OpenFont("Arial.ttf", 24); // Larger font for the current address text
-
-    for (int col = 0; col < MAX_COLS; col++)
-    {
-        for (int row = 0; row < num_rows; row++)
-        {
-            if (currentIndex >= emails.size())
-                break;
-
-            Email &email = emails[currentIndex];
-
-            while (classifierShape.x != email.x || classifierShape.y != email.y)
-            {
-                if (classifierShape.y < email.y)
-                    classifierShape.y++;
-                if (classifierShape.y > email.y)
-                    classifierShape.y--;
-                if (classifierShape.x < email.x)
-                    classifierShape.x++;
-                if (classifierShape.x > email.x)
-                    classifierShape.x--;
-
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                SDL_RenderClear(renderer);
-
-                for (const Email &e : emails)
-                {
-                    SDL_Rect emailRect = {e.x, e.y, EMAIL_WIDTH, EMAIL_HEIGHT};
-                    SDL_SetRenderDrawColor(renderer, e.color.r, e.color.g, e.color.b, 255);
-                    SDL_RenderFillRect(renderer, &emailRect);
-                }
-
-                SDL_SetRenderDrawColor(renderer, GRAY.r, GRAY.g, GRAY.b, 255);
-                SDL_RenderFillRect(renderer, &classifierShape);
-
-                // Render current address at the bottom
-                SDL_Surface *addressSurface = TTF_RenderText_Solid(largeFont, email.address.c_str(), WHITE);
-                SDL_Texture *addressTexture = SDL_CreateTextureFromSurface(renderer, addressSurface);
-                SDL_Rect addressRect = {50, SCREEN_HEIGHT - 50 - addressSurface->h, addressSurface->w, addressSurface->h};
-                SDL_RenderCopy(renderer, addressTexture, NULL, &addressRect);
-                SDL_DestroyTexture(addressTexture);
-                SDL_FreeSurface(addressSurface);
-
-                SDL_RenderPresent(renderer);
-                SDL_Delay(15);//classifier delay
-            }
-
-            email.toggleBlinking();
-            SDL_Rect emailRect = {email.x, email.y, EMAIL_WIDTH, EMAIL_HEIGHT};
-
-            bool containsSpamWord = email.content.find("free") != std::string::npos || email.content.find("offer") != std::string::npos;
-
-            SDL_Color classifierColor = containsSpamWord ? RED : GREEN;
-
-            for (int i = 0; i < 4; i++) {
-                SDL_SetRenderDrawColor(renderer, email.blinking ? classifierColor.r : GRAY.r,
-                                    email.blinking ? classifierColor.g : GRAY.g,
-                                    email.blinking ? classifierColor.b : GRAY.b, 255);
-
-                SDL_RenderFillRect(renderer, &classifierShape);
-                SDL_RenderFillRect(renderer, &emailRect);
-                SDL_RenderPresent(renderer);
-
-                SDL_Delay(100);
-
-                email.toggleBlinking();
-            }
-
-            email.classify();
-            currentIndex++;
-        }
-    }
-
-    std::vector<Email> spamEmails;
-    std::vector<Email> nonSpamEmails;
-
-    for (Email &email : emails)
-    {
-        if (email.is_spam)
-        {
-            spamEmails.push_back(email);
-        }
-        else
-        {
-            nonSpamEmails.push_back(email);
-        }
-    }
-
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
-
-    renderClassifiedEmails(renderer, font, spamEmails, nonSpamEmails);
-
-    TTF_CloseFont(largeFont); // Close the large font
-}
-
-int main(int argc, char *argv[])
-{
-    if (SDL_Init(SDL_INIT_VIDEO) < 0 || TTF_Init() == -1)
-    {
+int main(int argc, char *argv[]) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0 || TTF_Init() == -1) {
         std::cerr << "Initialization failed: " << SDL_GetError() << " " << TTF_GetError() << std::endl;
         return 1;
     }
 
-    SDL_Window *window = SDL_CreateWindow("Email Classifier", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    TTF_Font *font = TTF_OpenFont("Arial.ttf", 12);
+    SDL_Window *window = SDL_CreateWindow(
+        "Email Classifier - Naive Bayes Visualization",
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        SDL_WINDOW_SHOWN
+    );
 
-    if (!window || !renderer || !font)
-    {
+    SDL_Renderer *renderer = SDL_CreateRenderer(
+        window,
+        -1,
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+    );
+
+    TTF_Font *font = TTF_OpenFont("Arial.ttf", 14);
+
+    if (!window || !renderer || !font) {
         std::cerr << "Setup failed: " << SDL_GetError() << " " << TTF_GetError() << std::endl;
         return 1;
     }
 
     std::vector<Email> emails = loadEmails("emails.txt");
+    if (emails.empty()) {
+        std::cerr << "No emails loaded from file" << std::endl;
+        return 1;
+    }
 
     classifyEmails(renderer, font, emails);
 
-    SDL_Event e;
-    bool quit = false;
-    while (!quit)
-    {
-        while (SDL_PollEvent(&e))
-        {
-            if (e.type == SDL_QUIT)
-                quit = true;
+    bool running = true;
+    SDL_Event event;
+   while (running) {
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT || 
+            (event.type == SDL_KEYDOWN && 
+             (event.key.keysym.sym == SDLK_ESCAPE || event.key.keysym.sym == SDLK_q))) {
+            running = false;
         }
+        handleMouseEvents(event, isDragging, gridOffsetX, lastMouseX);
+    }
+        
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        for (const Email& email : emails) {
+            renderEmailRect(renderer, email);
+            renderEmailAddress(renderer, font, email);
+        }
+        SDL_RenderPresent(renderer);
+        SDL_Delay(16);
     }
 
     TTF_CloseFont(font);
