@@ -323,6 +323,7 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
     auto spamWords = loadWordList("spam_words.txt");
     auto nonSpamWords = loadWordList("non_spam_words.txt");
     
+    // First classification pass
     for (Email& email : emails) {
         std::istringstream ss(email.content);
         std::string word;
@@ -338,13 +339,14 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
     
     classifier.train(emails);
     
+    // Visualization of classification process
     for (Email& email : emails) {
         SDL_Event event;
         std::istringstream ss(email.content);
         std::string word;
         while (ss >> word) {
             while (SDL_PollEvent(&event)) {
-                                if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q) {
+                if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q) {
                     return;
                 }
                 handleMouseEvents(event, isDragging, gridOffsetX, lastMouseX);
@@ -367,23 +369,57 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
         email.color = email.is_spam ? RED : GREEN;
     }
 
-    const int SPAM_START_X = 50;
-    const int NON_SPAM_START_X = SCREEN_WIDTH - 250;
-    int spam_y = 50;
-    int non_spam_y = 50;
+    // After classification, before animation loop:
+    const int START_Y = 50;
+    const int EMAILS_PER_COLUMN = (SCREEN_HEIGHT - 100) / (EMAIL_HEIGHT + GRID_SPACING);
+
+    // For spam emails (left side)
+    int spam_currentX = 50;
+    int spam_currentY = START_Y;
+    int spam_count = 0;
+    int spam_maxColumnWidth = EMAIL_WIDTH;
+
+    // For non-spam emails (right side, flowing right to left)
+    int nonspam_currentX = SCREEN_WIDTH - EMAIL_WIDTH - 50; // Start from rightmost position
+    int nonspam_currentY = START_Y;
+    int nonspam_count = 0;
+    int nonspam_maxColumnWidth = EMAIL_WIDTH;
 
     for (Email& email : emails) {
         if (email.is_spam) {
-            email.target_x = SPAM_START_X;
-            email.target_y = spam_y;
-            spam_y += EMAIL_HEIGHT + GRID_SPACING;
+            email.target_x = spam_currentX;
+            email.target_y = spam_currentY;
+        
+            int addressWidth = std::min(static_cast<int>(email.address.length()), MAX_ADDRESS_LENGTH) * 8;
+            spam_maxColumnWidth = std::min(std::max(spam_maxColumnWidth, EMAIL_WIDTH + addressWidth), MAX_COLUMN_WIDTH);
+        
+            spam_count++;
+            spam_currentY += EMAIL_HEIGHT + GRID_SPACING;
+        
+            if (spam_count % EMAILS_PER_COLUMN == 0) {
+                spam_currentY = START_Y;
+                spam_currentX += spam_maxColumnWidth + GRID_SPACING;
+                spam_maxColumnWidth = EMAIL_WIDTH;
+            }
         } else {
-            email.target_x = NON_SPAM_START_X;
-            email.target_y = non_spam_y;
-            non_spam_y += EMAIL_HEIGHT + GRID_SPACING;
+            email.target_x = nonspam_currentX;
+            email.target_y = nonspam_currentY;
+        
+            int addressWidth = std::min(static_cast<int>(email.address.length()), MAX_ADDRESS_LENGTH) * 8;
+            nonspam_maxColumnWidth = std::min(std::max(nonspam_maxColumnWidth, EMAIL_WIDTH + addressWidth), MAX_COLUMN_WIDTH);
+        
+            nonspam_count++;
+            nonspam_currentY += EMAIL_HEIGHT + GRID_SPACING;
+        
+            if (nonspam_count % EMAILS_PER_COLUMN == 0) {
+                nonspam_currentY = START_Y;
+                nonspam_currentX -= (nonspam_maxColumnWidth + GRID_SPACING); // Move left for next column
+                nonspam_maxColumnWidth = EMAIL_WIDTH;
+            }
         }
     }
 
+    // Animation loop
     bool moving = true;
     while (moving) {
         moving = false;
@@ -392,7 +428,7 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
 
         for (Email& email : emails) {
             email.updatePosition();
-            if (std::abs(email.current_x - email.target_x) > 0.1 || 
+            if (std::abs(email.current_x - email.target_x) > 0.1 ||
                 std::abs(email.current_y - email.target_y) > 0.1) {
                 moving = true;
             }
@@ -405,6 +441,7 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
 
     generateDetailedReports(emails, classifier.getSpamWordProbs(), classifier.getNonSpamWordProbs());
 }
+
 
 int main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0 || TTF_Init() == -1) {
