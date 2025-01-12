@@ -53,25 +53,22 @@ struct Email {
     float current_x, current_y;
 
     Email(int x, int y, std::string address, std::string content)
-        : x(std::min(x, SCREEN_WIDTH)), 
-          y(std::min(y, SCREEN_HEIGHT)), 
-          current_x(std::min(x, SCREEN_WIDTH)), 
-          current_y(std::min(y, SCREEN_HEIGHT)), 
-          target_x(std::min(x, SCREEN_WIDTH)), 
-          target_y(std::min(y, SCREEN_HEIGHT)),
-          address(address.substr(0, MAX_ADDRESS_LENGTH)), 
-          content(content), 
-          color(WHITE), 
-          blinking(false), 
+        : x(x),
+          y(y),
+          current_x(x),
+          current_y(y),
+          target_x(x),
+          target_y(y),
+          address(address.substr(0, MAX_ADDRESS_LENGTH)),
+          content(content),
+          color(WHITE),
+          blinking(false),
           is_spam(false) {}
 
     void updatePosition() {
         const float LERP_FACTOR = 0.1f;
         current_x += (target_x - current_x) * LERP_FACTOR;
         current_y += (target_y - current_y) * LERP_FACTOR;
-        
-        current_x = std::min(current_x, static_cast<float>(SCREEN_WIDTH));
-        current_y = std::min(current_y, static_cast<float>(SCREEN_HEIGHT));
     }
 };
 
@@ -107,9 +104,7 @@ void handleMouseEvents(SDL_Event& event, bool& isDragging, int& gridOffsetX, int
             }
             break;
     }
-}
-
-class NaiveBayesClassifier {
+}class NaiveBayesClassifier {
 private:
     std::unordered_map<std::string, double> spamWordProbs;
     std::unordered_map<std::string, double> nonSpamWordProbs;
@@ -204,16 +199,16 @@ std::vector<Email> loadEmails(const std::string &filename) {
                 currentColumn.push_back(email);
                 
                 int addressWidth = std::min(static_cast<int>(address.length()), MAX_ADDRESS_LENGTH) * 8;
-                maxColumnWidth = std::min(std::max(maxColumnWidth, EMAIL_WIDTH + addressWidth), MAX_COLUMN_WIDTH);
+                maxColumnWidth = std::max(maxColumnWidth, EMAIL_WIDTH + addressWidth);
                 
                 count++;
-                currentY = std::min(currentY + EMAIL_HEIGHT + GRID_SPACING, SCREEN_HEIGHT);
+                currentY += EMAIL_HEIGHT + GRID_SPACING;
                 
                 if (count % EMAILS_PER_COLUMN == 0) {
                     emails.insert(emails.end(), currentColumn.begin(), currentColumn.end());
                     currentColumn.clear();
                     currentY = START_Y;
-                    currentX = std::min(currentX + maxColumnWidth + GRID_SPACING, SCREEN_WIDTH);
+                    currentX += maxColumnWidth + GRID_SPACING;
                     maxColumnWidth = EMAIL_WIDTH;
                 }
             }
@@ -230,25 +225,23 @@ std::vector<Email> loadEmails(const std::string &filename) {
 
 void renderEmailRect(SDL_Renderer* renderer, const Email& email) {
     SDL_Rect emailRect = {
-        std::min(static_cast<int>(email.current_x) + 
-            std::max(-MAX_GRID_OFFSET, std::min(gridOffsetX, MAX_GRID_OFFSET)), SCREEN_WIDTH),
-        std::min(static_cast<int>(email.current_y), SCREEN_HEIGHT),
-        std::min(EMAIL_WIDTH, SCREEN_WIDTH),
-        std::min(EMAIL_HEIGHT, SCREEN_HEIGHT)
+        static_cast<int>(email.current_x) + gridOffsetX,
+        static_cast<int>(email.current_y),
+        EMAIL_WIDTH,
+        EMAIL_HEIGHT
     };
     SDL_SetRenderDrawColor(renderer, email.color.r, email.color.g, email.color.b, 255);
     SDL_RenderFillRect(renderer, &emailRect);
 }
-
-void renderClassifier(SDL_Renderer* renderer, int x, int y, const std::string& currentWord, 
+void renderClassifier(SDL_Renderer* renderer, int x, int y, const std::string& currentWord,
                      const std::unordered_map<std::string, bool>& spamWords,
                      const std::unordered_map<std::string, bool>& nonSpamWords) {
     for(int i = 0; i < 3; i++) {
         SDL_Rect classifierRect = {
-            std::min(x - 5 - i + std::max(-MAX_GRID_OFFSET, std::min(gridOffsetX, MAX_GRID_OFFSET)), SCREEN_WIDTH),
-            std::min(y - 5 - i, SCREEN_HEIGHT),
-            std::min(EMAIL_WIDTH + 10 + (i*2), SCREEN_WIDTH),
-            std::min(EMAIL_HEIGHT + 10 + (i*2), SCREEN_HEIGHT)
+            static_cast<int>(x - 5 - i) + gridOffsetX,
+            static_cast<int>(y - 5 - i),
+            EMAIL_WIDTH + 10 + (i*2),
+            EMAIL_HEIGHT + 10 + (i*2)
         };
         
         std::string wordLower = currentWord;
@@ -266,17 +259,17 @@ void renderClassifier(SDL_Renderer* renderer, int x, int y, const std::string& c
     }
 }
 
+
 void renderEmailAddress(SDL_Renderer *renderer, TTF_Font *font, const Email &email) {
     SDL_Surface *surface = TTF_RenderText_Solid(font, email.address.c_str(), WHITE);
     if (surface) {
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
         if (texture) {
             SDL_Rect destRect = {
-                std::min(static_cast<int>(email.current_x + EMAIL_WIDTH + 15) + 
-                    std::max(-MAX_GRID_OFFSET, std::min(gridOffsetX, MAX_GRID_OFFSET)), SCREEN_WIDTH),
-                std::min(static_cast<int>(email.current_y), SCREEN_HEIGHT),
-                std::min(surface->w, SCREEN_WIDTH),
-                std::min(surface->h, SCREEN_HEIGHT)
+                static_cast<int>(email.current_x + EMAIL_WIDTH + 15) + gridOffsetX,
+                static_cast<int>(email.current_y),
+                surface->w,
+                surface->h
             };
             SDL_RenderCopy(renderer, texture, NULL, &destRect);
             SDL_DestroyTexture(texture);
@@ -284,7 +277,6 @@ void renderEmailAddress(SDL_Renderer *renderer, TTF_Font *font, const Email &ema
         SDL_FreeSurface(surface);
     }
 }
-
 void generateDetailedReports(const std::vector<Email>& emails, 
                            const std::unordered_map<std::string, double>& spamWordProbs,
                            const std::unordered_map<std::string, double>& nonSpamWordProbs) {
@@ -499,7 +491,7 @@ int main(int argc, char *argv[]) {
             renderEmailAddress(renderer, font, email);
         }
         SDL_RenderPresent(renderer);
-        SDL_Delay(16);
+        SDL_Delay(26);
     }
 
     TTF_CloseFont(font);
