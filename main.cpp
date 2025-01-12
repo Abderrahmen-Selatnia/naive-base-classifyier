@@ -41,7 +41,6 @@ struct WordStats {
     
     WordStats() : spamCount(0), nonSpamCount(0), spamProbability(0.0) {}
 };
-
 struct Email {
     int x, y;
     int target_x, target_y;
@@ -51,6 +50,7 @@ struct Email {
     std::string content;
     bool is_spam;
     float current_x, current_y;
+    bool classification_complete;  // Add this new member
 
     Email(int x, int y, std::string address, std::string content)
         : x(x),
@@ -63,7 +63,8 @@ struct Email {
           content(content),
           color(WHITE),
           blinking(false),
-          is_spam(false) {}
+          is_spam(false),
+          classification_complete(false) {}  // Initialize the new flag
 
     void updatePosition() {
         const float LERP_FACTOR = 0.1f;
@@ -98,6 +99,8 @@ void handleMouseEvents(SDL_Event& event, bool& isDragging, int& gridOffsetX, int
             break;
         case SDL_MOUSEMOTION:
             if (isDragging) {
+
+
                 int deltaX = event.motion.x - lastMouseX;
                 gridOffsetX += deltaX;
                 lastMouseX = event.motion.x;
@@ -259,18 +262,29 @@ void renderClassifier(SDL_Renderer* renderer, int x, int y, const std::string& c
     }
 }
 
-
 void renderEmailAddress(SDL_Renderer *renderer, TTF_Font *font, const Email &email) {
     SDL_Surface *surface = TTF_RenderText_Solid(font, email.address.c_str(), WHITE);
     if (surface) {
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
         if (texture) {
-            SDL_Rect destRect = {
-                static_cast<int>(email.current_x + EMAIL_WIDTH + 15) + gridOffsetX,
-                static_cast<int>(email.current_y),
-                surface->w,
-                surface->h
-            };
+            SDL_Rect destRect;
+            if (email.is_spam && email.classification_complete) {
+                // Left side for spam only after classification
+                destRect = {
+                    static_cast<int>(email.current_x - surface->w - 15) + gridOffsetX,
+                    static_cast<int>(email.current_y),
+                    surface->w,
+                    surface->h
+                };
+            } else {
+                // Right side for all other cases
+                destRect = {
+                    static_cast<int>(email.current_x + EMAIL_WIDTH + 15) + gridOffsetX,
+                    static_cast<int>(email.current_y),
+                    surface->w,
+                    surface->h
+                };
+            }
             SDL_RenderCopy(renderer, texture, NULL, &destRect);
             SDL_DestroyTexture(texture);
         }
@@ -360,19 +374,24 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
         email.is_spam = classifier.classify(email.content);
         email.color = email.is_spam ? RED : GREEN;
     }
+    // After the classification loop
+    for (Email& email : emails) {
+        email.classification_complete = true;
+    }
 
-    // After classification, before animation loop:
+    // After classification, calculate the middle point
+    const int MIDDLE_X = SCREEN_WIDTH / 2;
     const int START_Y = 50;
     const int EMAILS_PER_COLUMN = (SCREEN_HEIGHT - 100) / (EMAIL_HEIGHT + GRID_SPACING);
 
-    // For spam emails (left side)
-    int spam_currentX = 50;
+    // Start spam columns left of middle
+    int spam_currentX = MIDDLE_X - (EMAIL_WIDTH + GRID_SPACING);
     int spam_currentY = START_Y;
     int spam_count = 0;
     int spam_maxColumnWidth = EMAIL_WIDTH;
 
-    // For non-spam emails (right side, flowing right to left)
-    int nonspam_currentX = SCREEN_WIDTH - EMAIL_WIDTH - 50; // Start from rightmost position
+    // Start non-spam columns right of middle
+    int nonspam_currentX = MIDDLE_X + GRID_SPACING;
     int nonspam_currentY = START_Y;
     int nonspam_count = 0;
     int nonspam_maxColumnWidth = EMAIL_WIDTH;
@@ -381,31 +400,29 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
         if (email.is_spam) {
             email.target_x = spam_currentX;
             email.target_y = spam_currentY;
-        
             int addressWidth = std::min(static_cast<int>(email.address.length()), MAX_ADDRESS_LENGTH) * 8;
-            spam_maxColumnWidth = std::min(std::max(spam_maxColumnWidth, EMAIL_WIDTH + addressWidth), MAX_COLUMN_WIDTH);
-        
+            spam_maxColumnWidth = std::max(spam_maxColumnWidth, EMAIL_WIDTH + addressWidth);
+            
             spam_count++;
             spam_currentY += EMAIL_HEIGHT + GRID_SPACING;
-        
+            
             if (spam_count % EMAILS_PER_COLUMN == 0) {
                 spam_currentY = START_Y;
-                spam_currentX += spam_maxColumnWidth + GRID_SPACING;
+                spam_currentX -= (spam_maxColumnWidth + GRID_SPACING);
                 spam_maxColumnWidth = EMAIL_WIDTH;
             }
         } else {
             email.target_x = nonspam_currentX;
             email.target_y = nonspam_currentY;
-        
             int addressWidth = std::min(static_cast<int>(email.address.length()), MAX_ADDRESS_LENGTH) * 8;
-            nonspam_maxColumnWidth = std::min(std::max(nonspam_maxColumnWidth, EMAIL_WIDTH + addressWidth), MAX_COLUMN_WIDTH);
-        
+            nonspam_maxColumnWidth = std::max(nonspam_maxColumnWidth, EMAIL_WIDTH + addressWidth);
+            
             nonspam_count++;
             nonspam_currentY += EMAIL_HEIGHT + GRID_SPACING;
-        
+            
             if (nonspam_count % EMAILS_PER_COLUMN == 0) {
                 nonspam_currentY = START_Y;
-                nonspam_currentX -= (nonspam_maxColumnWidth + GRID_SPACING); // Move left for next column
+                nonspam_currentX += (nonspam_maxColumnWidth + GRID_SPACING);
                 nonspam_maxColumnWidth = EMAIL_WIDTH;
             }
         }
