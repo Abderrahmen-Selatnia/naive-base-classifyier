@@ -1,0 +1,307 @@
+Word Analysis Report
+==================
+
+Word: a
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0881
+
+Word: account
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: act
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: ahead.
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: all
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0566
+
+Word: amazing
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: and
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: are
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0566
+
+Word: big
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: birthday!
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: bonuses.
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: call
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0377
+
+Word: catch
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: claim
+Spam Probability: 0.1075
+Non-Spam Probability: 0.0063
+
+Word: click
+Spam Probability: 0.1075
+Non-Spam Probability: 0.0063
+
+Word: congratulations,
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0629
+
+Word: deal,
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0692
+
+Word: don't
+Spam Probability: 0.0538
+Non-Spam Probability: 0.0063
+
+Word: email.
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0566
+
+Word: exclusive
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0692
+
+Word: for
+Spam Probability: 0.0108
+Non-Spam Probability: 0.2642
+
+Word: forward
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0377
+
+Word: free
+Spam Probability: 0.0538
+Non-Spam Probability: 0.0063
+
+Word: get
+Spam Probability: 0.0538
+Non-Spam Probability: 0.0063
+
+Word: gift
+Spam Probability: 0.0538
+Non-Spam Probability: 0.0063
+
+Word: great
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: happy
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: here
+Spam Probability: 0.1075
+Non-Spam Probability: 0.0063
+
+Word: invoice
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0377
+
+Word: just
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: let's
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: limited
+Spam Probability: 0.0538
+Non-Spam Probability: 0.0063
+
+Word: looking
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0377
+
+Word: lottery!
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: meeting
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0943
+
+Word: miss
+Spam Probability: 0.0538
+Non-Spam Probability: 0.0063
+
+Word: needs
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: next
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0377
+
+Word: now!
+Spam Probability: 0.0538
+Non-Spam Probability: 0.0063
+
+Word: offer,
+Spam Probability: 0.0538
+Non-Spam Probability: 0.0063
+
+Word: on
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0566
+
+Word: only
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0692
+
+Word: our
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0629
+
+Word: out!
+Spam Probability: 0.0538
+Non-Spam Probability: 0.0063
+
+Word: prize!
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0629
+
+Word: project
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0566
+
+Word: promotion
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: purchase.
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0377
+
+Word: quickly
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: receive
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: recent
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0377
+
+Word: reward.
+Spam Probability: 0.1075
+Non-Spam Probability: 0.0063
+
+Word: scheduled
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0943
+
+Word: soon.
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: special
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: tasks
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0566
+
+Word: thank
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0566
+
+Word: time
+Spam Probability: 0.0538
+Non-Spam Probability: 0.0063
+
+Word: to
+Spam Probability: 0.1075
+Non-Spam Probability: 0.0377
+
+Word: tomorrow.
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0943
+
+Word: track.
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0566
+
+Word: up
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: update:
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0566
+
+Word: urgent:
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: verification.
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: week.
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0377
+
+Word: win
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: wishing
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: with
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: won
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0629
+
+Word: year
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: you
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0818
+
+Word: you!
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0692
+
+Word: you've
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0629
+
+Word: you.
+Spam Probability: 0.0108
+Non-Spam Probability: 0.0314
+
+Word: your
+Spam Probability: 0.1505
+Non-Spam Probability: 0.1132
+

@@ -291,39 +291,72 @@ void renderEmailAddress(SDL_Renderer *renderer, TTF_Font *font, const Email &ema
         SDL_FreeSurface(surface);
     }
 }
-void generateDetailedReports(const std::vector<Email>& emails, 
+void generateDetailedReports(const std::vector<Email>& emails,
                            const std::unordered_map<std::string, double>& spamWordProbs,
                            const std::unordered_map<std::string, double>& nonSpamWordProbs) {
+    // General statistics file
+    std::ofstream statsFile("statistics_report.txt");
+    int totalEmails = emails.size();
+    int spamCount = std::count_if(emails.begin(), emails.end(), [](const Email& e) { return e.is_spam; });
+    
+    statsFile << "Classification Statistics\n";
+    statsFile << "=======================\n";
+    statsFile << "Total Emails: " << totalEmails << "\n";
+    statsFile << "Spam Emails: " << spamCount << "\n";
+    statsFile << "Non-Spam Emails: " << (totalEmails - spamCount) << "\n";
+    statsFile << "Spam Ratio: " << (static_cast<double>(spamCount) / totalEmails * 100) << "%\n\n";
+
+    // Word analysis file
+    std::ofstream wordFile("word_analysis.txt");
     std::map<std::string, WordStats> wordStats;
     
+    for (const auto& pair : spamWordProbs) {
+        WordStats& stats = wordStats[pair.first];
+        stats.word = pair.first;
+        stats.spamProbability = pair.second;
+    }
+
+    wordFile << "Word Analysis Report\n";
+    wordFile << "==================\n\n";
+    for (const auto& pair : wordStats) {
+        wordFile << "Word: " << pair.second.word << "\n";
+        wordFile << "Spam Probability: " << std::fixed << std::setprecision(4) << pair.second.spamProbability << "\n";
+        wordFile << "Non-Spam Probability: " << 
+            (nonSpamWordProbs.count(pair.first) ? nonSpamWordProbs.at(pair.first) : 0.0) << "\n\n";
+    }
+
+    // Individual spam analysis
+    std::ofstream spamFile("spam_analysis.txt");
+    spamFile << "Spam Email Analysis\n";
+    spamFile << "==================\n\n";
+    
     for (const Email& email : emails) {
-        std::istringstream ss(email.content);
-        std::string word;
-        while (ss >> word) {
-            std::transform(word.begin(), word.end(), word.begin(), ::tolower);
-            WordStats& stats = wordStats[word];
-            stats.word = word;
-            if (email.is_spam) {
-                stats.spamCount++;
-            } else {
-                stats.nonSpamCount++;
+        if (email.is_spam) {
+            spamFile << "Email: " << email.address << "\n";
+            spamFile << "Content: " << email.content << "\n";
+            spamFile << "Spam indicators:\n";
+            
+            std::istringstream ss(email.content);
+            std::string word;
+            std::vector<std::pair<std::string, double>> spamWords;
+            
+            while (ss >> word) {
+                std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+                if (spamWordProbs.count(word) && spamWordProbs.at(word) > 0.7) {
+                    spamWords.push_back({word, spamWordProbs.at(word)});
+                }
             }
-            stats.spamProbability = spamWordProbs.count(word) ? spamWordProbs.at(word) : 0.0;
+            
+            std::sort(spamWords.begin(), spamWords.end(),
+                     [](const auto& a, const auto& b) { return a.second > b.second; });
+            
+            for (const auto& word : spamWords) {
+                spamFile << "- " << word.first << " (probability: " << word.second << ")\n";
+            }
+            spamFile << "\n-------------------\n\n";
         }
     }
-
-    std::ofstream reportFile("classification_report.txt");
-    reportFile << "Word Classification Report\n";
-    reportFile << "========================\n\n";
-    
-    for (const auto& pair : wordStats) {
-        reportFile << "Word: " << pair.second.word << "\n";
-        reportFile << "Spam Count: " << pair.second.spamCount << "\n";
-        reportFile << "Non-Spam Count: " << pair.second.nonSpamCount << "\n";
-        reportFile << "Spam Probability: " << pair.second.spamProbability << "\n\n";
-    }
 }
-
 void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &emails) {
     NaiveBayesClassifier classifier;
     auto spamWords = loadWordList("spam_words.txt");
@@ -445,7 +478,7 @@ void classifyEmails(SDL_Renderer *renderer, TTF_Font *font, std::vector<Email> &
             renderEmailAddress(renderer, font, email);
         }
         SDL_RenderPresent(renderer);
-        SDL_Delay(16);
+        SDL_Delay(6);
     }
 
     generateDetailedReports(emails, classifier.getSpamWordProbs(), classifier.getNonSpamWordProbs());

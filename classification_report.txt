@@ -1,798 +1,383 @@
 Word Classification Report
 ========================
 
-Word: 1
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: 10
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: 2
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: 3
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: 50%
-Spam Count: 6
-Non-Spam Count: 0
-Spam Probability: 0.04
-
 Word: a
-Spam Count: 9
-Non-Spam Count: 6
-Spam Probability: 0.0571429
-
-Word: about
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 13
+Spam Probability: 0.0107527
 
-Word: access
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: accordingly.
+Word: account
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: act
-Spam Count: 16
-Non-Spam Count: 0
-Spam Probability: 0.0971429
-
-Word: action
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
-Word: adjustments
+Word: ahead.
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: all
-Spam Count: 9
-Non-Spam Count: 0
-Spam Probability: 0.0571429
-
-Word: allocate
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: am
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 8
+Spam Probability: 0.0107527
 
 Word: amazing
-Spam Count: 4
-Non-Spam Count: 0
-Spam Probability: 0.0285714
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: and
-Spam Count: 10
-Non-Spam Count: 24
-Spam Probability: 0.0628571
-
-Word: annual
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
-Word: any
+Word: are
 Spam Count: 0
-Non-Spam Count: 6
-Spam Probability: 0.00571429
+Non-Spam Count: 8
+Spam Probability: 0.0107527
 
-Word: assignments.
+Word: big
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
-Word: at
-Spam Count: 3
-Non-Spam Count: 6
-Spam Probability: 0.0228571
-
-Word: attend.
+Word: birthday!
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: be
-Spam Count: 0
-Non-Spam Count: 6
-Spam Probability: 0.00571429
-
-Word: before
-Spam Count: 13
-Non-Spam Count: 3
-Spam Probability: 0.08
-
-Word: board
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: bonuses.
-Spam Count: 4
-Non-Spam Count: 0
-Spam Probability: 0.0285714
-
-Word: bring
 Spam Count: 0
-Non-Spam Count: 6
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
-Word: budget.
+Word: call
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 5
+Spam Probability: 0.0107527
 
-Word: can
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: chance,
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
+Word: catch
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: claim
-Spam Count: 4
+Spam Count: 9
 Non-Spam Count: 0
-Spam Probability: 0.0285714
+Spam Probability: 0.107527
 
-Word: cost
-Spam Count: 3
+Word: click
+Spam Count: 9
 Non-Spam Count: 0
-Spam Probability: 0.0228571
+Spam Probability: 0.107527
 
-Word: deal
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
+Word: congratulations,
+Spam Count: 0
+Non-Spam Count: 9
+Spam Probability: 0.0107527
 
 Word: deal,
-Spam Count: 4
-Non-Spam Count: 0
-Spam Probability: 0.0285714
-
-Word: discount
-Spam Count: 6
-Non-Spam Count: 0
-Spam Probability: 0.04
-
-Word: discuss
 Spam Count: 0
-Non-Spam Count: 12
-Spam Probability: 0.00571429
-
-Word: discussion
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: discussion.
-Spam Count: 0
-Non-Spam Count: 6
-Spam Probability: 0.00571429
-
-Word: documents
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 10
+Spam Probability: 0.0107527
 
 Word: don't
-Spam Count: 20
-Non-Spam Count: 3
-Spam Probability: 0.12
-
-Word: ends
-Spam Count: 3
+Spam Count: 4
 Non-Spam Count: 0
-Spam Probability: 0.0228571
+Spam Probability: 0.0537634
+
+Word: email.
+Spam Count: 0
+Non-Spam Count: 8
+Spam Probability: 0.0107527
 
 Word: exclusive
-Spam Count: 7
-Non-Spam Count: 0
-Spam Probability: 0.0457143
-
-Word: fast
-Spam Count: 6
-Non-Spam Count: 0
-Spam Probability: 0.04
-
-Word: financial
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: findings
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 10
+Spam Probability: 0.0107527
 
 Word: for
-Spam Count: 10
-Non-Spam Count: 15
-Spam Probability: 0.0628571
-
-Word: forever!
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: forget
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 41
+Spam Probability: 0.0107527
+
+Word: forward
+Spam Count: 0
+Non-Spam Count: 5
+Spam Probability: 0.0107527
 
 Word: free
-Spam Count: 10
+Spam Count: 4
 Non-Spam Count: 0
-Spam Probability: 0.0628571
+Spam Probability: 0.0537634
 
 Word: get
-Spam Count: 16
+Spam Count: 4
 Non-Spam Count: 0
-Spam Probability: 0.0971429
+Spam Probability: 0.0537634
 
 Word: gift
 Spam Count: 4
 Non-Spam Count: 0
-Spam Probability: 0.0285714
+Spam Probability: 0.0537634
 
-Word: go
+Word: great
 Spam Count: 0
-Non-Spam Count: 6
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
-Word: gone
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: gone,
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: grab
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: have
+Word: happy
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
-Word: here's
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: important
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: in
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: incredible
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: is
-Spam Count: 3
-Non-Spam Count: 6
-Spam Probability: 0.0228571
-
-Word: it
-Spam Count: 7
-Non-Spam Count: 3
-Spam Probability: 0.0457143
-
-Word: it's
-Spam Count: 16
-Non-Spam Count: 0
-Spam Probability: 0.0971429
-
-Word: it’s
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: just
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: key
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: last
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: late!
-Spam Count: 4
-Non-Spam Count: 0
-Spam Probability: 0.0285714
-
-Word: late.
+Word: here
 Spam Count: 9
 Non-Spam Count: 0
-Spam Probability: 0.0571429
+Spam Probability: 0.107527
 
-Word: latest
+Word: invoice
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 5
+Spam Probability: 0.0107527
+
+Word: just
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
+
+Word: let's
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: limited
-Spam Count: 16
+Spam Count: 4
 Non-Spam Count: 0
-Spam Probability: 0.0971429
+Spam Probability: 0.0537634
 
-Word: limited-time
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: long.
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: make
+Word: looking
 Spam Count: 0
-Non-Spam Count: 6
-Spam Probability: 0.00571429
+Non-Spam Count: 5
+Spam Probability: 0.0107527
 
-Word: massive
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
+Word: lottery!
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: meeting
 Spam Count: 0
-Non-Spam Count: 12
-Spam Probability: 0.00571429
-
-Word: meeting.
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: milestones.
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 14
+Spam Probability: 0.0107527
 
 Word: miss
-Spam Count: 13
-Non-Spam Count: 0
-Spam Probability: 0.08
-
-Word: need
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: next
-Spam Count: 3
-Non-Spam Count: 9
-Spam Probability: 0.0228571
-
-Word: no
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: now
-Spam Count: 6
-Non-Spam Count: 3
-Spam Probability: 0.04
-
-Word: now!
-Spam Count: 7
-Non-Spam Count: 0
-Spam Probability: 0.0457143
-
-Word: off
-Spam Count: 6
-Non-Spam Count: 0
-Spam Probability: 0.04
-
-Word: offer
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: offer!
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: offer,
-Spam Count: 10
-Non-Spam Count: 0
-Spam Probability: 0.0628571
-
-Word: offer.
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: on
-Spam Count: 12
-Non-Spam Count: 3
-Spam Probability: 0.0742857
-
-Word: once
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: once-in-a-lifetime
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: only
 Spam Count: 4
 Non-Spam Count: 0
-Spam Probability: 0.0285714
+Spam Probability: 0.0537634
 
-Word: only.
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
+Word: needs
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
-Word: opportunity.
-Spam Count: 3
+Word: next
+Spam Count: 0
+Non-Spam Count: 5
+Spam Probability: 0.0107527
+
+Word: now!
+Spam Count: 4
 Non-Spam Count: 0
-Spam Probability: 0.0228571
+Spam Probability: 0.0537634
+
+Word: offer,
+Spam Count: 4
+Non-Spam Count: 0
+Spam Probability: 0.0537634
+
+Word: on
+Spam Count: 0
+Non-Spam Count: 8
+Spam Probability: 0.0107527
+
+Word: only
+Spam Count: 0
+Non-Spam Count: 10
+Spam Probability: 0.0107527
 
 Word: our
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: out
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
+Spam Count: 0
+Non-Spam Count: 9
+Spam Probability: 0.0107527
 
 Word: out!
 Spam Count: 4
 Non-Spam Count: 0
-Spam Probability: 0.0285714
+Spam Probability: 0.0537634
 
-Word: over
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: place
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: please
-Spam Count: 0
-Non-Spam Count: 12
-Spam Probability: 0.00571429
-
-Word: pm.
+Word: prize!
 Spam Count: 0
 Non-Spam Count: 9
-Spam Probability: 0.00571429
-
-Word: points.
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: premium
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: prepared
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: productive
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: products!
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: products.
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
+Spam Probability: 0.0107527
 
 Word: project
 Spam Count: 0
-Non-Spam Count: 6
-Spam Probability: 0.00571429
+Non-Spam Count: 8
+Spam Probability: 0.0107527
 
-Word: project.
+Word: promotion
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
-Word: provide
+Word: purchase.
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: purchase!
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: purchases
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: quarter.
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: quarterly
-Spam Count: 0
-Non-Spam Count: 6
-Spam Probability: 0.00571429
+Non-Spam Count: 5
+Spam Probability: 0.0107527
 
 Word: quickly
-Spam Count: 4
-Non-Spam Count: 0
-Spam Probability: 0.0285714
-
-Word: ready
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: receive
-Spam Count: 4
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
+
+Word: recent
+Spam Count: 0
+Non-Spam Count: 5
+Spam Probability: 0.0107527
+
+Word: reward.
+Spam Count: 9
 Non-Spam Count: 0
-Spam Probability: 0.0285714
-
-Word: regarding
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: relevant
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: report.
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: reports
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: reports.
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: results
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: review
-Spam Count: 0
-Non-Spam Count: 6
-Spam Probability: 0.00571429
-
-Word: schedule.
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Spam Probability: 0.107527
 
 Word: scheduled
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: services
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: set
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 14
+Spam Probability: 0.0107527
 
 Word: soon.
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: special
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: steps
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: sure
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: take
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
-
-Word: task
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: tasks
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 8
+Spam Probability: 0.0107527
 
-Word: team
+Word: thank
 Spam Count: 0
-Non-Spam Count: 6
-Spam Probability: 0.00571429
-
-Word: the
-Spam Count: 0
-Non-Spam Count: 51
-Spam Probability: 0.00571429
-
-Word: this
-Spam Count: 12
-Non-Spam Count: 0
-Spam Probability: 0.0742857
-
-Word: through
-Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 8
+Spam Probability: 0.0107527
 
 Word: time
-Spam Count: 13
-Non-Spam Count: 3
-Spam Probability: 0.08
-
-Word: time.
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
-
-Word: timeline
-Spam Count: 0
-Non-Spam Count: 6
-Spam Probability: 0.00571429
-
-Word: to
-Spam Count: 0
-Non-Spam Count: 9
-Spam Probability: 0.00571429
-
-Word: today
 Spam Count: 4
 Non-Spam Count: 0
-Spam Probability: 0.0285714
+Spam Probability: 0.0537634
 
-Word: today!
-Spam Count: 6
-Non-Spam Count: 0
-Spam Probability: 0.04
+Word: to
+Spam Count: 9
+Non-Spam Count: 5
+Spam Probability: 0.107527
 
 Word: tomorrow.
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 14
+Spam Probability: 0.0107527
 
-Word: too
-Spam Count: 13
-Non-Spam Count: 0
-Spam Probability: 0.08
-
-Word: trial
-Spam Count: 6
-Non-Spam Count: 0
-Spam Probability: 0.04
-
-Word: upcoming
+Word: track.
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 8
+Spam Probability: 0.0107527
 
-Word: update
+Word: up
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
-Word: updates,
+Word: update:
 Spam Count: 0
-Non-Spam Count: 3
-Spam Probability: 0.00571429
+Non-Spam Count: 8
+Spam Probability: 0.0107527
 
-Word: wait,
-Spam Count: 7
-Non-Spam Count: 0
-Spam Probability: 0.0457143
-
-Word: we
+Word: urgent:
 Spam Count: 0
-Non-Spam Count: 18
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
-Word: will
+Word: verification.
 Spam Count: 0
-Non-Spam Count: 24
-Spam Probability: 0.00571429
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
-Word: won't
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
+Word: week.
+Spam Count: 0
+Non-Spam Count: 5
+Spam Probability: 0.0107527
+
+Word: win
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
+
+Word: wishing
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
+
+Word: with
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
+
+Word: won
+Spam Count: 0
+Non-Spam Count: 9
+Spam Probability: 0.0107527
+
+Word: year
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: you
-Spam Count: 3
-Non-Spam Count: 0
-Spam Probability: 0.0228571
+Spam Count: 0
+Non-Spam Count: 12
+Spam Probability: 0.0107527
 
 Word: you!
-Spam Count: 7
-Non-Spam Count: 0
-Spam Probability: 0.0457143
+Spam Count: 0
+Non-Spam Count: 10
+Spam Probability: 0.0107527
+
+Word: you've
+Spam Count: 0
+Non-Spam Count: 9
+Spam Probability: 0.0107527
+
+Word: you.
+Spam Count: 0
+Non-Spam Count: 4
+Spam Probability: 0.0107527
 
 Word: your
-Spam Count: 16
-Non-Spam Count: 0
-Spam Probability: 0.0971429
+Spam Count: 13
+Non-Spam Count: 17
+Spam Probability: 0.150538
 

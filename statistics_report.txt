@@ -1,0 +1,7 @@
+Classification Statistics
+=======================
+Total Emails: 100
+Spam Emails: 17
+Non-Spam Emails: 83
+Spam Ratio: 17%
+

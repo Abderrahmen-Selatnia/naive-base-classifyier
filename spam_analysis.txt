@@ -1,0 +1,105 @@
+Spam Email Analysis
+==================
+
+Email: user3@example.com
+Content: Click here to claim your reward.
+Spam indicators:
+
+-------------------
+
+Email: user9@example.com
+Content: Limited time offer, don't miss out!
+Spam indicators:
+
+-------------------
+
+Email: user10@example.com
+Content: Get your free gift now!
+Spam indicators:
+
+-------------------
+
+Email: user19@example.com
+Content: Click here to claim your reward.
+Spam indicators:
+
+-------------------
+
+Email: user3@example.com
+Content: Click here to claim your reward.
+Spam indicators:
+
+-------------------
+
+Email: user9@example.com
+Content: Limited time offer, don't miss out!
+Spam indicators:
+
+-------------------
+
+Email: user10@example.com
+Content: Get your free gift now!
+Spam indicators:
+
+-------------------
+
+Email: user19@example.com
+Content: Click here to claim your reward.
+Spam indicators:
+
+-------------------
+
+Email: user3@example.com
+Content: Click here to claim your reward.
+Spam indicators:
+
+-------------------
+
+Email: user9@example.com
+Content: Limited time offer, don't miss out!
+Spam indicators:
+
+-------------------
+
+Email: user10@example.com
+Content: Get your free gift now!
+Spam indicators:
+
+-------------------
+
+Email: user19@example.com
+Content: Click here to claim your reward.
+Spam indicators:
+
+-------------------
+
+Email: user3@example.com
+Content: Click here to claim your reward.
+Spam indicators:
+
+-------------------
+
+Email: user9@example.com
+Content: Limited time offer, don't miss out!
+Spam indicators:
+
+-------------------
+
+Email: user10@example.com
+Content: Get your free gift now!
+Spam indicators:
+
+-------------------
+
+Email: user19@example.com
+Content: Click here to claim your reward.
+Spam indicators:
+
+-------------------
+
+Email: user3@example.com
+Content: Click here to claim your reward.
+Spam indicators:
+
+-------------------
+
